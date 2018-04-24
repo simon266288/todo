@@ -4,7 +4,7 @@
       <input type="checkbox" v-model="item.checked"> <!--item.checked-->
       <span class="checkbox-custom"></span>
     </label>
-    <input type="text" v-model="item.text" placeholder='写点什么。。。'>  <!--绑定item.text-->
+    <input maxlength="5" type="text" v-model="item.text" placeholder='写点什么。。。'>  <!--绑定item.text-->
     <a class="delete-item"> <!--删除图标-->
       <span class="icon-trash"></span>
     </a>
@@ -13,22 +13,32 @@
 <script>
 export default {
   name: "item",
-  props: ["item"] //子组件显式的用 props 选项声明它期待获得的数据，
+  props:{  //子组件显式的用 props 选项声明它期待获得的数据，
   //这里申明 它想要一个叫做 ’item‘的数据。
+    item:{
+      type: Object,
+      default: ()=>{
+        return {
+          checked: false,
+          text: 'hello world!'
+        }
+      }
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
 .list-item {
   display: flex;
-  width: 100%;
+  width: auto;
   padding: 1rem 0;
+  overflow: hidden;
   input {
     outline: none;
     border: none;
     background: transparent;
     font-size: 1.5rem;
-  }
-  label {
+    flex-grow: 2;
   }
 }
 </style>

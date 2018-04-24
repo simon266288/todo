@@ -23,8 +23,9 @@
         </div>
       </div>
   
-      <div class=" form todo-new input-symbol"> <!-- 新增单个代办单项输入框,监听了回车事件，双向绑定text值,监听了disabled属性，在todo.locked为true的情况下无法编辑-->
-         <input type="text" v-model="text" placeholder='请输入' @keyup.enter="onAdd" :disabled="todo.locked" />
+ <div class=" form todo-new input-symbol">
+        <!-- 绑定disabled值，当todo.locked为绑定的时候，禁止input输入,双向绑定text,和监听input的回车事件@keyup.enter -->
+        <input type="text" v-model="text" placeholder='请输入' @keyup.enter="onAdd" :disabled="todo.locked" />
         <span class="icon-add"></span>
       </div>
     </nav>
@@ -38,6 +39,7 @@
 </template>
 <script>
 import item from "./item";
+import { getTodo, addRecord } from "../api/api";
 export default {
   name: "todo",
   components: {
@@ -47,27 +49,45 @@ export default {
     return {
       todo: {
         //详情内容
-        title: "星期一",
-        count: 12,
-        locked: false
+        title: "星期一", //标题
+        count: 12, //数量
+        locked: false //是否绑定
       },
-      items: [
-        //代办单项列表
-        { checked: false, text: "新的一天", isDelete: false },
-        { checked: false, text: "新的一天", isDelete: false },
-        { checked: false, text: "新的一天", isDelete: false }
-      ],
+      items: [], //代办单项列表
       text: "" //新增代办单项绑定的值
     };
   },
+  watch: {
+    "$route.params.id"() {
+      //监听$route.params.id的变化，如果这个id即代表用户点击
+      //了其他的待办事项需要重新请求数据
+      this.init();
+    }
+  },
   methods: {
     onAdd() {
-      this.items.push({
-        checked: false,
-        text: this.text,
-        isDelete: false
-      }); // 当用户点击回车时候 ，给items的值新增一个对象，this.text 即输入框绑定的值
-      this.text = ""; //初始化输入框的值。
+      //当用户输入文字，并且回车时调用次方法。
+      const ID = this.$route.params.id;
+      addRecord({ id: ID, text: this.text }).then(res => {
+        this.text = "";
+        this.init();
+        //请求成功后初始化
+      });
+    },
+    init() {
+      //获取到$route下params下的id，即我们在menus.vue组件传入的数据。
+      const ID = this.$route.params.id;
+      getTodo({ id: ID }).then(res => {
+        let { id, title, count, isDelete, locked, record } = res.data.todo;
+        this.items = record;
+        this.todo = {
+          id: id,
+          title: title,
+          count: count,
+          locked: locked,
+          isDelete: isDelete
+        };
+      });
     }
   }
 };
@@ -75,7 +95,6 @@ export default {
 <style lang="less">
 .page {
   width: 100%;
-  padding-left: 1rem;
   background: linear-gradient(180deg, #d0edf5, #e1e5f0);
 }
 nav {
