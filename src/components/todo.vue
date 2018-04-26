@@ -2,7 +2,6 @@
   <div class="page lists-show" v-show="!todo.isDelete">
     <!-- 头部模块 -->
     <nav>
-      <!-- 当用户浏览车窗口尺寸小于40em时候，显示手机端的菜单图标 -->
       <div class="form list-edit-form" v-show="isUpdate">
         <!-- 当用户点击标题进入修改状态，就显示当前内容可以修改 -->
         <input type="text" v-model="todo.title" @keyup.enter="updateTitle" :disabled="todo.locked">
@@ -13,8 +12,10 @@
           </a>
         </div>
       </div>
+
       <!-- 显示标题和数字模块 -->
-      <h1 class="title-page" v-show="!isUpdate" @click="isUpdate = true">
+      <!-- 锁定时无法更改title，于是绑定了 !todo.locked -->
+      <h1 class="title-page" v-show="!isUpdate" @click="isUpdate = !todo.locked">
         <span class="title-wrapper">{{todo.title}}</span>
         <!-- title:标题 绑定标题 -->
         <span class="count-list">{{todo.count || 0}}</span>
@@ -23,10 +24,8 @@
       <!-- 右边显示删除图标和锁定图标的模块 -->
       <div class="nav-group right" v-show="!isUpdate">
         <div class="options-web">
-          <a class=" nav-item" @click="onlock">
-            <!-- cicon-lock锁定的图标
-                                                    icon-unlock：非锁定的图标
-                                                    -->
+          <a class="nav-item" @click="onlock">
+            <!-- cicon-lock锁定的图标 -->
             <span class="icon-lock" v-if="todo.locked"></span>
             <span class="icon-unlock" v-else>
             </span>
@@ -38,7 +37,7 @@
         </div>
       </div>
       <!-- 用户新增代办事项的input模块 -->
-      <div class=" form todo-new input-symbol">
+      <div class="form todo-new input-symbol" v-show="!todo.locked">
         <!-- 绑定disabled值，当todo.locked为绑定的时候，禁止input输入,双向绑定text,和监听input的回车事件@keyup.enter -->
         <input type="text" v-model="text" placeholder='请输入' @keyup.enter="onAdd" :disabled="todo.locked" />
         <span class="icon-add"></span>
@@ -123,6 +122,9 @@ export default {
     onDelete() {
       this.todo.isDelete = true;
       this.updateTodo();
+      if(Todos.length == 1){
+        this.init();
+      }
     },
     onlock() {
       this.todo.locked = !this.todo.locked;
@@ -135,7 +137,6 @@ export default {
 <style lang="less">
 .page {
   width: 100%;
-  background: linear-gradient(180deg, #d0edf5, #e1e5f0);
 }
 nav {
   display: flex;
@@ -143,12 +144,16 @@ nav {
   flex-wrap: wrap;
   flex-direction: row;
   .title-page {
-    display: flex;
-    justify-content: flex-start;
     width: 90%;
-    .count-list {
-      padding-left: 0.5rem;
-      color: rgb(21, 180, 127);
+    font-size: 1.2rem;
+    .title-wrapper{
+    display: inline-block;
+    width: 350px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     }
   }
   .nav-group {
@@ -160,6 +165,7 @@ nav {
       .nav-item {
         display: inline-block;
         width: 2rem;
+        font-size: 18px;
       }
     }
   }
@@ -175,7 +181,8 @@ nav {
       line-height: 2rem;
       height: 2rem;
       font-size: 1.8rem;
-      margin-left: 0.5rem;
+      margin-left: 20px;
+      color: #303133
     }
     .icon-add {
       font-size: 1.2rem;
@@ -188,6 +195,5 @@ nav {
 .list-items {
   width: 100%;
   height: 100%;
-  padding-top: 2rem;
 }
 </style>

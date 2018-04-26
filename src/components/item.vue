@@ -5,7 +5,7 @@
         <input type="checkbox" v-model="item.checked" name="cheked" @change="onChange" :diabled="locked"> <!--item.checked-->
         <span class="checkbox-custom"></span>
       </label>
-      <input maxlength="5" type="text" v-model="item.text" placeholder='写点什么。。。' :disabled="item.checked || locked" @keyup.enter="onChange">  <!--绑定item.text-->
+      <input type="text" v-bind:class="{active: locked,decoration: item.checked}" v-model="item.text" placeholder='写点什么。。。' :disabled="item.checked || locked" @keyup.enter="onChange">  <!--绑定item.text-->
       <a class="delete-item" v-if="item.checked && !locked" @click="item.isDelete = true; onChange()"> <!--删除图标-->
         <span class="icon-trash"></span>
       </a>
@@ -47,16 +47,35 @@ export default {
 </script>
 <style lang="less" scoped>
 .list-item {
-  display: flex;
-  width: auto;
-  padding: 1rem 0;
-  overflow: hidden;
-  input {
+  width: 100%;
+  height: 3rem;
+  position: relative;
+  .active{
+    color: #909399;
+  }
+  .decoration{
+    text-decoration: line-through;
+  }
+  label {
+    border: none;
+    input{
+    position: absolute;
+    left: 6px;
+    top: 5px;
+    }
+  }
+  input[type="text"]{
     outline: none;
     border: none;
     background: transparent;
-    font-size: 1.5rem;
-    flex-grow: 2;
+    font-size: 1.3rem;
+    position: absolute;
+    left: 40px;
+    width: 90%;
+  }
+  .delete-item{
+    float: right;
+    padding-top: 5px;
   }
 }
 </style>

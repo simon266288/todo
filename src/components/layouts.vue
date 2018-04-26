@@ -9,8 +9,8 @@
   </section>
 </template>
 <script>
-import menus from './menus'
-import todo from './todo'
+import menus from "./menus";
+import todo from "./todo";
 export default {
   name: "layouts",
   components: {
@@ -23,18 +23,20 @@ export default {
 .container {
   display: -webkit-flex;
   display: flex;
-  height: 100%;
-  width: 100%;
+  width: 1000px;
+  height: 600px;
+  margin: 50px auto;
 }
 .menu {
   display: flex;
   height: 100%;
-  background-color: rgb(41, 14, 1);
-  flex-grow: 1;
-  background: linear-gradient(160deg, rgb(223, 211, 247),#ccc);
+  width: 300px;
 }
 .content-container {
-  display: flex;
-  flex-grow: 3;
+  width: 700px;
+}
+.count-list {
+  padding-left: 0.5rem;
+  color: #E6A23C;
 }
 </style>
